@@ -1,0 +1,81 @@
+CREATE TABLE ponto_turistico_local (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    raio_gatilho_metros INTEGER DEFAULT 50,
+    categoria_principal TEXT,
+    place_id TEXT,
+    ativo INTEGER DEFAULT 1,
+    content_hash TEXT
+);
+
+CREATE TABLE conteudo_midia_local (
+    id TEXT NOT NULL PRIMARY KEY,
+    ponto_id TEXT NOT NULL,
+    idioma TEXT DEFAULT 'pt-BR' NOT NULL,
+    titulo_local TEXT NOT NULL,
+    roteiro_rapido TEXT NOT NULL,
+    roteiro_completo TEXT NOT NULL,
+    audio_url_rapido TEXT,
+    audio_url_completo TEXT,
+    imagem_url TEXT,
+    FOREIGN KEY (ponto_id) REFERENCES ponto_turistico_local(id) ON DELETE CASCADE
+);
+
+CREATE TABLE contexto_local (
+    id TEXT NOT NULL PRIMARY KEY,
+    ponto_id TEXT NOT NULL,
+    horarios_funcionamento TEXT,
+    custo_ingresso TEXT,
+    fonte_url TEXT,
+    FOREIGN KEY (ponto_id) REFERENCES ponto_turistico_local(id) ON DELETE CASCADE
+);
+
+CREATE TABLE historico_usuario_local (
+    id TEXT NOT NULL PRIMARY KEY,
+    usuario_id TEXT NOT NULL,
+    ponto_id TEXT NOT NULL,
+    status_consumo TEXT NOT NULL DEFAULT 'nao_visto',
+    audio_versao_consumida TEXT,
+    idioma_consumido TEXT,
+    data_consumo REAL,
+    FOREIGN KEY (ponto_id) REFERENCES ponto_turistico_local(id) ON DELETE CASCADE
+);
+
+-- Queries
+selectAllPontos:
+SELECT * FROM ponto_turistico_local WHERE ativo = 1;
+
+selectPontoById:
+SELECT * FROM ponto_turistico_local WHERE id = :id;
+
+selectPontoByPlaceId:
+SELECT * FROM ponto_turistico_local WHERE place_id = :placeId;
+
+selectAllConteudoByPontoIdAndIdioma:
+SELECT * FROM conteudo_midia_local WHERE ponto_id = :pontoId AND idioma = :idioma;
+
+selectAllConteudoByPontoId:
+SELECT * FROM conteudo_midia_local WHERE ponto_id = :pontoId;
+
+selectAllContextoByPontoId:
+SELECT * FROM contexto_local WHERE ponto_id = :pontoId;
+
+selectHistoricoByUsuarioId:
+SELECT * FROM historico_usuario_local WHERE usuario_id = :usuarioId AND status_consumo = :status;
+
+selectHistoricoByUsuarioAndPonto:
+SELECT * FROM historico_usuario_local WHERE usuario_id = :usuarioId AND ponto_id = :pontoId;
+
+deleteAllPontos:
+DELETE FROM ponto_turistico_local;
+
+deleteAllConteudo:
+DELETE FROM conteudo_midia_local;
+
+deleteAllContexto:
+DELETE FROM contexto_local;
+
+deleteAllHistorico:
+DELETE FROM historico_usuario_local;
