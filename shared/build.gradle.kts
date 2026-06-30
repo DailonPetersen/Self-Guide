@@ -48,6 +48,7 @@ kotlin {
             implementation(libs.sqldelight.sqlite.jvm)
             implementation(libs.androidx.security.crypto)
             implementation(libs.google.play.services.auth)
+            implementation(libs.koin.androidx.compose)
         }
 
         iosMain.dependencies {

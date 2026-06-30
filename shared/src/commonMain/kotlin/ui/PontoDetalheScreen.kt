@@ -13,10 +13,32 @@ import com.selfguide.audio.getAudioFilePath
 import com.selfguide.model.PontoTuristico
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+
+private class AudioPlayerInjector : KoinComponent {
+    val audioPlayer: AudioPlayerService by inject()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PontoDetalheScreen(
+    ponto: PontoTuristico,
+    preferenciaRapida: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    val audioPlayer = remember { AudioPlayerInjector().audioPlayer }
+    PontoDetalheScreenContent(
+        ponto = ponto,
+        preferenciaRapida = preferenciaRapida,
+        audioPlayer = audioPlayer,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PontoDetalheScreenContent(
     ponto: PontoTuristico,
     preferenciaRapida: Boolean = true,
     audioPlayer: AudioPlayerService,
@@ -98,7 +120,6 @@ fun PontoDetalheScreen(
             onPlayClick = {
                 coroutineScope.launch {
                     audioUrl?.let { url ->
-                        val fileName = "${ponto.id}.mp3"
                         when (audioState) {
                             AudioState.Idle, AudioState.Ready, AudioState.Paused -> {
                                 audioPlayer.play(getAudioFilePath(ponto.id))
