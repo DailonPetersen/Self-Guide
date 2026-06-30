@@ -1,12 +1,18 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("org.jetbrains.compose")
-    id("app.cash.sqldelight")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
-    androidTarget()
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
+    }
 
     iosX64()
     iosArm64()
@@ -25,29 +31,28 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.components.resources)
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-            implementation("io.ktor:ktor-client-core:2.3.12")
-            implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
-            implementation("io.insert-koin:koin-core:3.5.6")
-            implementation("app.cash.sqldelight:runtime:2.0.2")
-            implementation("io.github.jan-tieb:supabase-auth-kt:2.0.0")
-            implementation("io.github.jan-tieb:supabase-postgrest-kt:2.0.0")
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.koin.core)
+            implementation(libs.sqldelight.runtime)
+            implementation(libs.supabase.auth)
+            implementation(libs.supabase.postgrest)
         }
 
         androidMain.dependencies {
-            implementation("io.ktor:ktor-client-android:2.3.12")
-            implementation("io.insert-koin:koin-android:3.5.6")
-            implementation("app.cash.sqldelight:sqlite-jvm:2.0.2")
-            implementation("androidx.security:security-crypto:1.1.0-alpha06")
-            implementation("com.google.android.gms:play-services-auth:21.3.0")
+            implementation(libs.ktor.client.android)
+            implementation(libs.koin.android)
+            implementation(libs.sqldelight.sqlite.jvm)
+            implementation(libs.androidx.security.crypto)
+            implementation(libs.google.play.services.auth)
         }
 
         iosMain.dependencies {
-            implementation("io.ktor:ktor-client-darwin:2.3.12")
-            implementation("app.cash.sqldelight:native-worker:2.0.2")
-            implementation("app.cash.sqldelight:sqlite-native-driver-inspector:2.0.2")
+            implementation(libs.ktor.client.darwin)
+            implementation(libs.sqldelight.native.driver)
         }
     }
 }
@@ -55,13 +60,19 @@ kotlin {
 android {
     namespace = "com.selfguide.shared"
     compileSdk = 35
+    
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
 }
 
 sqldelight {
     databases {
         create("LocalDatabase") {
             packageName.set("com.selfguide.database")
-            srcDir.set("src/commonMain/sqldelight")
+            srcDirs.setFrom("src/commonMain/sqldelight")
+            dialect("app.cash.sqldelight:sqlite-3-38-dialect:2.0.2")
         }
     }
 }
