@@ -2,8 +2,6 @@ package com.selfguide.di
 
 import android.content.Context
 import com.selfguide.audio.AudioPlayerService
-import android.content.Context
-import com.selfguide.audio.AudioPlayerService
 import com.selfguide.auth.AuthRepository
 import com.selfguide.network.SupabaseAuthRepository
 import com.selfguide.network.SupabaseProvider
@@ -22,6 +20,7 @@ val authModule = module {
 val audioModule = module {
     single { AudioPlayerService(get()) }
 }
+
 
 fun initKoin() {
     startKoin {
