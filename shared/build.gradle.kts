@@ -39,6 +39,7 @@ kotlin {
         androidMain.dependencies {
             implementation("io.ktor:ktor-client-android:2.3.12")
             implementation("io.insert-koin:koin-android:3.5.6")
+            implementation("io.insert-koin:koin-androidx-compose:3.5.6")
             implementation("app.cash.sqldelight:sqlite-jvm:2.0.2")
             implementation("androidx.security:security-crypto:1.1.0-alpha06")
             implementation("com.google.android.gms:play-services-auth:21.3.0")

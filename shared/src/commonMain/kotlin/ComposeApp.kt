@@ -4,8 +4,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ComposeApp() {
+fun ComposeApp(onSignInClick: (android.content.Intent) -> Unit) {
     MaterialTheme {
-        // App entry point
+        // Tela principal do app
+        // Para usar o player: val audioPlayer = remember { AudioPlayerProvider().audioPlayer }
     }
 }

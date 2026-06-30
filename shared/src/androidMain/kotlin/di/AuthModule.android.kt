@@ -1,5 +1,7 @@
 package com.selfguide.di
 
+import android.content.Context
+import com.selfguide.audio.AudioPlayerService
 import com.selfguide.auth.AuthRepository
 import com.selfguide.network.SupabaseAuthRepository
 import com.selfguide.network.SupabaseProvider
@@ -15,20 +17,12 @@ val authModule = module {
     single<AuthRepository> { SupabaseAuthRepository(get()) }
 }
 
-fun initKoin() {
-    startKoin {
-        modules(authModule)
-    }
+val audioModule = module {
+    single { AudioPlayerService(get()) }
 }
 
-object AuthEventNotifier {
-    private var googleSignInCallback: ((android.content.Intent?) -> Unit)? = null
-
-    fun setGoogleSignInCallback(callback: (android.content.Intent?) -> Unit) {
-        googleSignInCallback = callback
-    }
-
-    fun notifyGoogleSignInResult(data: android.content.Intent?) {
-        googleSignInCallback?.invoke(data)
+fun initKoin() {
+    startKoin {
+        modules(authModule, audioModule)
     }
 }
