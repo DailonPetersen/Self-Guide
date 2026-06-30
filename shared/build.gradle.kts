@@ -54,6 +54,7 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.native.driver)
+            implementation("app.cash.sqldelight:sqlite-native-driver-inspector:2.0.2")
         }
     }
 }
@@ -61,7 +62,7 @@ kotlin {
 android {
     namespace = "com.selfguide.shared"
     compileSdk = 35
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
