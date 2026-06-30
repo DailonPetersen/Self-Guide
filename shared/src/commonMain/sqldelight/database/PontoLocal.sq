@@ -1,0 +1,45 @@
+CREATE TABLE PontoLocal (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    raio_gatilho_metros INTEGER NOT NULL DEFAULT 50,
+    titulo_local TEXT NOT NULL,
+    roteiro_rapido TEXT NOT NULL,
+    roteiro_completo TEXT NOT NULL,
+    audio_url_rapido TEXT,
+    audio_url_completo TEXT,
+    imagem_url TEXT,
+    horarios_funcionamento TEXT,
+    custo_ingresso TEXT,
+    content_hash TEXT NOT NULL,
+    rank INTEGER NOT NULL,
+    is_premium INTEGER NOT NULL,
+    is_ativo INTEGER NOT NULL,
+    status_consumo TEXT NOT NULL DEFAULT 'nao_visto',
+    pendente_sync INTEGER NOT NULL DEFAULT 0,
+    audio_rapido_cached INTEGER NOT NULL DEFAULT 0,
+    audio_completo_cached INTEGER NOT NULL DEFAULT 0,
+    data_cache TEXT NOT NULL
+);
+
+pontosAtivos:
+SELECT * FROM PontoLocal WHERE is_ativo = 1 ORDER BY rank ASC;
+
+substitutos:
+SELECT * FROM PontoLocal WHERE is_ativo = 0 ORDER BY rank ASC LIMIT 5;
+
+proximoSubstituto:
+SELECT * FROM PontoLocal WHERE is_ativo = 0 ORDER BY rank ASC LIMIT 1;
+
+pendentesSincronizacao:
+SELECT * FROM PontoLocal WHERE pendente_sync = 1;
+
+marcarConsumido:
+UPDATE PontoLocal SET status_consumo = 'consumido', pendente_sync = 1 WHERE id = :id;
+
+marcarSincronizado:
+UPDATE PontoLocal SET pendente_sync = 0 WHERE id = :id;
+
+deletarPontosInativos:
+DELETE FROM PontoLocal WHERE is_ativo = 0 AND rank > :maxRank;

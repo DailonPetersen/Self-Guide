@@ -21,8 +21,21 @@ val audioModule = module {
     single { AudioPlayerService(get()) }
 }
 
+
 fun initKoin() {
     startKoin {
         modules(authModule, audioModule)
+    }
+}
+
+object AuthEventNotifier {
+    private var googleSignInCallback: ((android.content.Intent?) -> Unit)? = null
+
+    fun setGoogleSignInCallback(callback: (android.content.Intent?) -> Unit) {
+        googleSignInCallback = callback
+    }
+
+    fun notifyGoogleSignInResult(data: android.content.Intent?) {
+        googleSignInCallback?.invoke(data)
     }
 }
